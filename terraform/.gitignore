@@ -1,0 +1,2 @@
+# ECR Repo_arn
+.terraform/modules/iam/ecr/terraform.tfvars
