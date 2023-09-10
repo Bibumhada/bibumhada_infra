@@ -4,7 +4,7 @@ provider "aws" {
 
 # IAM
 resource "aws_iam_user" "ecr_user" {
-  name = "todays-ecr-access-user"
+  name = "todays-menu-ecr-access-user"
   path = "/system/"
 }
 
@@ -22,15 +22,23 @@ resource "aws_iam_user_policy" "ecr_access_policy" {
       {
         Effect    = "Allow",
         Action    = [
-          "ecr:GetDownloadUrlForLayer",
+          "ecr:GetAuthorizationToken", //
+          "ecr:GetDownloadUrlForLayer", //
           "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:PutImage",
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload"
+          "ecr:BatchCheckLayerAvailability", //
+          "ecr:GetRepositoryPolicy",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages",
+          "ecr:DescribeImages",
+          "ecr:PutImage", //
+          "ecr:InitiateLayerUpload", //
+          "ecr:UploadLayerPart", //
+          "ecr:CompleteLayerUpload", //
         ],
-        Resource = [var.repo_arn]
+        // If you intend to use this IAM account for GitHub Actions, you should grant permissions to all repositories.
+        Resource = "*"
+        //It's more appropriate to create a dedicated IAM for GitHub Actions and grant permissions only to specific repositories as shown below.
+      #  Resource = [var.repo_arn]
       }
     ]
   })

@@ -3,19 +3,16 @@
 #  * Subnets
 #  * Internet Gateway
 #  * Route Table
-
-
 resource "aws_vpc" "eks_vpc" {
   cidr_block = "10.0.0.0/16"
-
   tags = {
     "Name"                                      = var.vpc_name,
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared",
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
 
 resource "aws_subnet" "eks_subnet" {
-  count = 2
+  count = length(data.aws_availability_zones.available.names)
 
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   cidr_block              = "10.0.${count.index}.0/24"
@@ -24,16 +21,13 @@ resource "aws_subnet" "eks_subnet" {
 
   tags = {
     "Name"                                      = "${var.subnet_name}-${count.index}"
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared",
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
 
 resource "aws_internet_gateway" "eks_igw" {
   vpc_id = aws_vpc.eks_vpc.id
-
-  tags = {
-    Name = var.internet_gateway_name
-  }
+  tags   = { Name = var.internet_gateway_name }
 }
 
 resource "aws_route_table" "eks_rtb" {
@@ -46,7 +40,7 @@ resource "aws_route_table" "eks_rtb" {
 }
 
 resource "aws_route_table_association" "eks_rtb_assoc" {
-  count = 2
+  count = length(data.aws_availability_zones.available.names)
 
   subnet_id      = aws_subnet.eks_subnet[count.index].id
   route_table_id = aws_route_table.eks_rtb.id

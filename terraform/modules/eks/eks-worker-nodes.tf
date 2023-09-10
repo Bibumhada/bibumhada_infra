@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "eks_node_policies" {
   role       = aws_iam_role.eks-node.name
 }
 
-resource "aws_security_group" "eks-node-sg" {
+resource "aws_security_group" "eks_node_sg" {
   name        = "eks-node-sg"
   description = "Worker Node Security Group"
   vpc_id      = aws_vpc.eks_vpc.id
@@ -49,6 +49,9 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_role_arn   = aws_iam_role.eks-node.arn
   subnet_ids      = aws_subnet.eks_subnet[*].id
 
+  instance_types = var.node_instance_type
+  capacity_type = var.capacity_type
+
   scaling_config {
     desired_size = var.node_group_desired_size
     max_size     = var.node_group_max_size
@@ -59,26 +62,6 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   tags = {
     Name        = "eks-node-group"
-    Project     = "todays-menu"
-    Environment = "production"
-  }
-}
-
-# Node security group
-resource "aws_security_group" "eks_node_sg" {
-  name        = "eks-node-sg"
-  description = "Worker Node Security Group"
-  vpc_id      = aws_vpc.eks_vpc.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name        = "eks-node-sg"
     Project     = "todays-menu"
     Environment = "production"
   }

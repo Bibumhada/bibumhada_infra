@@ -43,17 +43,27 @@ variable "internet_gateway_name" {
 variable "node_group_desired_size" {
   description = "Desired size of the EKS node group."
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "node_group_max_size" {
   description = "Maximum size of the EKS node group."
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "node_group_min_size" {
   description = "Minimum size of the EKS node group."
   type        = number
-  default     = 2
+  default     = 1
+}
+
+variable "node_instance_type" {
+  type = list(string)
+  default = ["t3.medium"]
+}
+
+variable "capacity_type" {
+  type = string
+  default = "SPOT"
 }
