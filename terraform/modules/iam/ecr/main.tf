@@ -1,6 +1,10 @@
+provider "aws" {
+  region = var.aws_region
+}
+
 # IAM
 resource "aws_iam_user" "ecr_user" {
-  name = "ecr-access-user"
+  name = "todays-ecr-access-user"
   path = "/system/"
 }
 
