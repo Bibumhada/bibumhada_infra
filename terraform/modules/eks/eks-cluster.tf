@@ -1,3 +1,10 @@
+locals {
+  common_tags = {
+    Project     = "todays-menu"
+    Environment = "production"
+  }
+}
+
 resource "aws_iam_role" "eks_cluster" {
   name = var.cluster_name
 
@@ -36,11 +43,12 @@ resource "aws_security_group" "eks_cluster_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name        = "eks-cluster-sg"
-    Project     = "todays-menu"
-    Environment = "production"
-  }
+  tags = merge(
+    {
+      Name = "eks-node-group"
+    },
+    local.common_tags
+  )
 }
 
 # Allow worker nodes to communicate with the cluster

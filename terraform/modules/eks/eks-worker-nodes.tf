@@ -36,11 +36,12 @@ resource "aws_security_group" "eks_node_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name        = "eks-node-sg"
-    Project     = "todays-menu"
-    Environment = "production"
-  }
+  tags = merge(
+    {
+      Name = "eks-node-group"
+    },
+    local.common_tags
+  )
 }
 
 resource "aws_eks_node_group" "eks_node_group" {
@@ -60,9 +61,10 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   depends_on = [aws_iam_role_policy_attachment.eks_node_policies]
 
-  tags = {
-    Name        = "eks-node-group"
-    Project     = "todays-menu"
-    Environment = "production"
-  }
+  tags = merge(
+    {
+      Name = "eks-node-group"
+    },
+    local.common_tags
+  )
 }
